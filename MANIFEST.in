@@ -1,0 +1,3 @@
+graft localosmpages/templates
+graft localosmpages/static
+include localosmpages/schema.sql

@@ -1,0 +1,19 @@
+<!doctype html>
+<title>Local OSM Pages</title>
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+<link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon-32x32.png') }}" sizes="32x32" />
+<link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon-16x16.png') }}" sizes="16x16" />
+<div class=page>
+  <h1>Local OSM pages</h1>
+  <div class=metanav>
+  {% if not session.osm_user %}
+    <a href="{{ url_for('login') }}">log in</a>
+  {% else %}
+    Logged in as {{ session.osm_user['display_name'] }}, <a href="{{ url_for('logout') }}">log out</a>
+  {% endif %}
+  </div>
+  {% for message in get_flashed_messages() %}
+    <div class=flash>{{ message }}</div>
+  {% endfor %}
+  {% block body %}{% endblock %}
+</div>

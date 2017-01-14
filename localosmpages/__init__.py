@@ -1,0 +1,1 @@
+from .localosmpages import app

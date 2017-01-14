@@ -1,0 +1,9 @@
+MANIFEST.in
+localosmpages/__init__.py
+localosmpages/localosmpages.py
+localosmpages/schema.sql
+localosmpages.egg-info/PKG-INFO
+localosmpages.egg-info/SOURCES.txt
+localosmpages.egg-info/dependency_links.txt
+localosmpages.egg-info/requires.txt
+localosmpages.egg-info/top_level.txt
