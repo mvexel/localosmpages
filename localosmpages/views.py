@@ -1,4 +1,4 @@
-from localosmpages import app, osm, database, user
+from localosmpages import app, osm, user
 from functools import wraps
 from flask import redirect, url_for, session, request, render_template, flash
 
@@ -6,13 +6,13 @@ def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if not 'user' in session:
+            flash(u'You need to be logged in for this.')
             return redirect(url_for('home', next=request.url))
         return f(*args, **kwargs)
     return decorated_function
 
 @app.route('/')
 def home():
-    db = database.get_db()
     return render_template('home.html')
 
 @app.route('/login')
