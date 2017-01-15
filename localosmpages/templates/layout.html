@@ -6,10 +6,10 @@
 <div class=page>
   <h1>Local OSM pages</h1>
   <div class=metanav>
-  {% if not session.osm_user %}
+  {% if not session.user %}
     <a href="{{ url_for('login') }}">log in</a>
   {% else %}
-    Logged in as {{ session.osm_user['display_name'] }}, <a href="{{ url_for('settings') }}">settings</a>, <a href="{{ url_for('logout') }}">log out</a>
+    Logged in as {{ session.user['display_name'] }}, <a href="{{ url_for('settings') }}">settings</a>, <a href="{{ url_for('logout') }}">log out</a>
   {% endif %}
   </div>
   {% for message in get_flashed_messages() %}

@@ -1,10 +1,7 @@
 {% extends "layout.html" %}
 {% block body %}
-  {% if session.osm_user %}
+  {% if session.user %}
   <h1>Logged in etc</h1>
-	{% if session.osm_user['is_new'] %}
-    <p>Welcome, new user</p>
-    {% endif %}
-    {{ session.osm_user }}
+    {{ session.user }}
   {% endif %}
 {% endblock %}

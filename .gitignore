@@ -3,3 +3,9 @@
 /localosmpages/localosmpages.db
 localosmpages.cpython-36.pyc
 *.pyc
+/__pycache__
+.DS_Store
+__pycache__/
+__pycache__/*
+/localosmpages/__pycache__/__init__.cpython-36.pyc
+/localosmpages.egg-info
