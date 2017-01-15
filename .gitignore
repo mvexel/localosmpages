@@ -1,0 +1,5 @@
+/build
+/dist
+/localosmpages/localosmpages.db
+localosmpages.cpython-36.pyc
+*.pyc

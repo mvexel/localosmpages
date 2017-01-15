@@ -3,18 +3,17 @@ import sqlite3
 from flask import Flask, request, session, g, redirect, url_for, abort, \
      render_template, flash
 from xml.etree import ElementTree
+from functools import wraps
 import json
 from datetime import datetime
 
-app = Flask(__name__) # create the application instance :)
-app.config.from_object(__name__) # load config from this file , flaskr.py
+app = Flask(__name__)
+app.config.from_object(__name__)
 
 # Load default config and override config from an environment variable
 app.config.update(dict(
     DATABASE=os.path.join(app.root_path, 'localosmpages.db'),
     SECRET_KEY='show me the way, lazarus',
-    USERNAME='admin',
-    PASSWORD='default'
 ))
 app.config.from_envvar('LOCALOSMPAGES_SETTINGS', silent=True)
 
@@ -65,6 +64,16 @@ def initdb_command():
     init_db()
     print('Initialized the database.')
 
+# decorators
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not 'osm_user' in session:
+            return redirect(url_for('home', next=request.url))
+        return f(*args, **kwargs)
+    return decorated_function
+
 # routes
 
 @app.route('/')
@@ -97,8 +106,12 @@ def oauth_authorized():
 
     flash('You were signed in as {username}'.format(
         username=session['osm_user'].display_name))
-    app.logger.debug(session['osm_user'])
     return redirect(next_url)
+
+@app.route('/settings')
+@login_required
+def settings():
+    return render_template('settings.html')
 
 @app.route('/logout')
 def logout():
@@ -129,9 +142,26 @@ class OSMUser(dict):
         self.messages_received = kwargs.get('messages_received', None)
         self.messages_unread = kwargs.get('messages_unread', None)
         self.messages_sent = kwargs.get('messages_sent', None)
-        self.join_date = kwargs.get('join_date', datetime.now())
-        self.last_active = kwargs.get('last_active', datetime.now())
+        self.join_date = kwargs.get('join_date', None)
+        self.last_active = kwargs.get('last_active', None)
         self.non_local = kwargs.get('non_local', None)
+        self.is_new = kwargs.get('is_new', None)
+
+        # sync dates
+        join_date = osm.get('user/preferences/osmlocalpages_join_date').data
+        app.logger.debug(join_date)
+        if join_date == b'':
+            app.logger.debug('new user')
+            self.is_new = True
+            self.join_date = str(datetime.now())
+            osm.put('user/preferences/osmlocalpages_join_date', data=self.join_date, content_type='text/plain')
+        else:
+            self.join_date = join_date
+            self.is_new = False
+        app.logger.debug(self.is_new)
+        self.last_active = str(datetime.now())
+        osm.put('user/preferences/osmlocalpages_last_active', data=self.last_active, content_type='text/plain')
+
 
     @classmethod
     def from_xml(cls, elem):
@@ -141,7 +171,7 @@ class OSMUser(dict):
                 osmid=int(user.attrib['id']),
                 display_name=user.attrib['display_name'],
                 changeset_count=user.find('changesets').attrib['count'],
-                avatar_url=user.find('img').attrib['href'],
+                avatar_url=user.find('img').attrib['href'].split('?')[0].replace('http','https'),
                 account_created=user.attrib['account_created'],
                 contributor_terms_agreed=bool(user.find('contributor-terms').attrib['agreed'] == 'true'),
                 pd=bool(user.find('contributor-terms').attrib['pd'] == 'true'),
@@ -159,3 +189,4 @@ class OSMUser(dict):
         return "OSMUSer {osmid} ({display_name})".format(
             osmid=self.osmid,
             display_name=self.display_name)
+

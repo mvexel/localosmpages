@@ -9,7 +9,7 @@
   {% if not session.osm_user %}
     <a href="{{ url_for('login') }}">log in</a>
   {% else %}
-    Logged in as {{ session.osm_user['display_name'] }}, <a href="{{ url_for('logout') }}">log out</a>
+    Logged in as {{ session.osm_user['display_name'] }}, <a href="{{ url_for('settings') }}">settings</a>, <a href="{{ url_for('logout') }}">log out</a>
   {% endif %}
   </div>
   {% for message in get_flashed_messages() %}
