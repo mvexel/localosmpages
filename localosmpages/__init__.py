@@ -2,6 +2,7 @@ from flask import Flask
 from flask_oauthlib.client import OAuth
 import os
 
+# Initialize the app
 app = Flask(__name__)
 app.config.from_object(__name__)
 
@@ -12,6 +13,7 @@ app.config.update(dict(
 app.config.from_envvar('LOCALOSMPAGES_SETTINGS', silent=True)
 
 oauth = OAuth()
+# TODO this should be loaded from out-of-repo config (at least the key / secret)
 osm = oauth.remote_app('osm',
     base_url='http://master.apis.dev.openstreetmap.org/api/0.6/',
     request_token_url='http://master.apis.dev.openstreetmap.org/oauth/request_token',
