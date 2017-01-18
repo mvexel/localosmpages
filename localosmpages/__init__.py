@@ -4,11 +4,13 @@ import os
 
 # Initialize the app
 app = Flask(__name__)
+
 app.config.from_object(__name__)
 
 # Load default config and override config from an environment variable
 app.config.update(dict(
     SECRET_KEY='show me the way, lazarus',
+    DATABASE='/tmp/localosmpages.db'
 ))
 app.config.from_envvar('LOCALOSMPAGES_SETTINGS', silent=True)
 
@@ -24,3 +26,4 @@ osm = oauth.remote_app('osm',
 )
 
 import localosmpages.views
+import localosmpages.database

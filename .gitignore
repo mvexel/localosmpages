@@ -9,3 +9,4 @@ __pycache__/
 __pycache__/*
 /localosmpages/__pycache__/__init__.cpython-36.pyc
 /localosmpages.egg-info
+*.db
